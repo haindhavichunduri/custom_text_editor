@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Text Editor</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <style>
+            body{
+                background-color: darkgray;
+            }
+            h1{
+                background-color: coral;
+                font-size: 50px;
+            }
+            table{
+                background-color: cyan;
+                border:5px solid black;
+            }
+            button{
+	            width:75%;
+	            height: 100%;
+	            border: 2px  solid black; 
+	            padding: 5px;
+	            margin: 2px;
+	            background-color: white; 
+            }
+            a{
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+    <body ng-app = "myApp" ng-controller="myCtrl"> 
+        <center>
+            <h1>EDITOR</h1>
+            <table>
+                <tr>
+                    <td><button><a href="teditor.html">
+                        <span class="material-icons">note_add</span>
+                        </a></button></td>
+                </tr>
+                <tr>
+                    <td><button type="button" 
+                            onclick="f1()" 
+                            class=" shadow-sm btn btn-outline-secondary" 
+                            data-toggle="tooltip"
+							data-placement="top"
+							title="Bold Text">
+                            <span class="material-icons">format_bold</span>
+                        </button>
+                    </td>
+                    <td><button type="button"
+                            onclick="f2()"
+                            class="shadow-sm btn btn-outline-success"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title="Italic Text">
+                            <span class="material-icons">format_italic</span>
+                        </button>
+                    </td>
+                    <td>
+                        <button type="button"
+							onclick="f6()"
+							class="btn shadow-sm btn-outline-secondary"
+							data-toggle="tooltip"
+							data-placement="top"
+							title="Uppercase Text">
+			                A</button>
+                    </td>
+                    <td>
+                        <button type="button"
+							onclick="f7()"
+							class="btn shadow-sm btn-outline-primary"
+							data-toggle="tooltip"
+							data-placement="top"
+							title="Lowercase Text">
+			                a</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><button ng-click="cut()">
+                        <span class="material-icons">content_cut</span>
+                        </button></td>
+                    <td><button ng-click="copy()">
+                        <span class="material-icons">copy_all</span></button></td>
+                    <td><button ng-click="paste()">
+                        <span class="material-icons">content_paste</span>
+                    </button></td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <textarea id="input" cols="85" rows="20" placeholder="Enter Text"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Enter Filename :</td>
+                    <td><input id="Save"></input></td>
+                    
+                </tr>
+                <tr>
+                    <td>Filename to Load:</td>
+                    <td><input type="file" id="file"></td>
+                    <td><button ng-click="loadFile()">
+                        <span class="material-icons">upload_file</span>
+                    </button></td>
+                </tr>
+                <tr>
+                    <td><button ng-click="close()">Close Tab</button></td>
+                    <td><button ng-click="saveText()" style="margin-right:0px; width:50px;">
+                        <span class="material-icons">file_download</span></button></b></button></td>
+                </tr>
+            </table>
+        </center>
+        <script>
+            function f1() { document.getElementById("input").style.fontWeight = "bold";}
+            function f2() {document.getElementById("input").style.fontStyle = "italic";}
+            function f6() {document.getElementById("input").style.textTransform = "uppercase";}
+            function f7() {document.getElementById("input").style.textTransform = "lowercase";}
+        </script>
+        <script>
+            var app = angular.module('myApp', []);
+            app.controller('myCtrl', function ($scope) {
+                var temp="";
+                $scope.saveText = function(){
+                    var textToSave = document.getElementById("input").value;
+                    var textBlob = new Blob([textToSave], {type:"text/plain"});
+                    var URL = window.URL.createObjectURL(textBlob);
+                    var fileName = document.getElementById("Save").value; 
+                    var downloadLink = document.createElement("a");
+                    downloadLink.download = fileName;
+                    downloadLink.innerHTML = "Download File";
+                    downloadLink.href = URL;
+                    downloadLink.onclick = destroy;
+                    downloadLink.style.display = "none";
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                }
+                function destroy(event){
+                    document.body.removeChild(event.target);
+                }
+                $scope.loadFile = function(){
+                    var Load = document.getElementById("file").files[0];
+                    var fileReader = new FileReader();
+                    fileReader.onload = function(fileLoadedEvent){
+                        var Loaded = fileLoadedEvent.target.result;
+                        document.getElementById("input").value = Loaded;
+                    };
+                    fileReader.readAsText(Load, "UTF-8");
+                }
+                $scope.cut = function(){
+                    $scope.temp=document.getElementById("input").value;
+                    document.getElementById("input").value="";
+                }
+                $scope.copy = function(){
+                    $scope.temp=document.getElementById("input").value;
+                }
+                $scope.paste = function(){
+                    document.getElementById("input").value=document.getElementById("input").value+$scope.temp;
+                }
+                $scope.close = function(){
+                    window.close();
+                }
+            });
+            </script>
+    </body>
+</html>
